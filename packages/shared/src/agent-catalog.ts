@@ -10,6 +10,7 @@ import {
 	DEFAULT_CHAT_TASK_PROMPT_TEMPLATE,
 	DEFAULT_TERMINAL_TASK_PROMPT_TEMPLATE,
 } from "./agent-prompt-template";
+import { listAgentTypes, type AgentFactory } from "./agent-registry";
 
 export const BUILTIN_AGENT_IDS = [...AGENT_TYPES, "superset-chat"] as const;
 
@@ -107,4 +108,31 @@ export function isBuiltinAgentId(id: string): id is BuiltinAgentId {
 
 export function isCustomAgentId(id: string): id is `custom:${string}` {
 	return id.startsWith("custom:");
+}
+
+/**
+ * Get all agent definitions including runtime-registered agents from the registry.
+ * Use this instead of BUILTIN_AGENT_DEFINITIONS when you want custom agents added via registerAgentType().
+ */
+export function getAllAgentDefinitions(): AgentDefinition[] {
+	const builtin = [...BUILTIN_AGENT_DEFINITIONS];
+	const registryAgents = listAgentTypes();
+
+	for (const factory of registryAgents) {
+		if (!BUILTIN_AGENT_IDS.includes(factory.id as BuiltinAgentId)) {
+			builtin.push({
+				id: factory.id as AgentDefinitionId,
+				source: "builtin",
+				kind: "terminal",
+				defaultLabel: factory.label,
+				defaultDescription: factory.description,
+				defaultCommand: factory.createCommand({} as AgentCommand).join(" "),
+				defaultPromptCommand: factory.createCommand({} as AgentCommand).join(" "),
+				defaultTaskPromptTemplate: DEFAULT_TERMINAL_TASK_PROMPT_TEMPLATE,
+				defaultEnabled: true,
+			});
+		}
+	}
+
+	return builtin;
 }

@@ -36,6 +36,10 @@
 			"types": "./src/agent-prompt-template.ts",
 			"default": "./src/agent-prompt-template.ts"
 		},
+		"./agent-registry": {
+			"types": "./src/agent-registry.ts",
+			"default": "./src/agent-registry.ts"
+		},
 		"./task-slug": {
 			"types": "./src/task-slug.ts",
 			"default": "./src/task-slug.ts"
@@ -51,6 +55,10 @@
 		"./local-mode": {
 			"types": "./src/local-mode.ts",
 			"default": "./src/local-mode.ts"
+		},
+		"./config": {
+			"types": "./src/config/index.ts",
+			"default": "./src/config/index.ts"
 		}
 	},
 	"scripts": {

@@ -8,7 +8,12 @@ import {
 	PROJECTS_DIR_NAME,
 	SUPERSET_DIR_NAME,
 } from "shared/constants";
-import type { LocalSetupConfig, SetupConfig } from "shared/types";
+import {
+	LocalSetupConfigSchema,
+	SetupConfigSchema,
+	type LocalSetupConfig,
+	type SetupConfig,
+} from "shared/config";
 
 /**
  * Worktrees don't include gitignored files, so copy .superset from main repo
@@ -39,21 +44,7 @@ function readConfigFile(configPath: string): SetupConfig | null {
 
 	try {
 		const content = readFileSync(configPath, "utf-8");
-		const parsed = JSON.parse(content) as SetupConfig;
-
-		if (parsed.setup && !Array.isArray(parsed.setup)) {
-			throw new Error("'setup' field must be an array of strings");
-		}
-
-		if (parsed.teardown && !Array.isArray(parsed.teardown)) {
-			throw new Error("'teardown' field must be an array of strings");
-		}
-
-		if (parsed.run && !Array.isArray(parsed.run)) {
-			throw new Error("'run' field must be an array of strings");
-		}
-
-		return parsed;
+		return SetupConfigSchema.parse(JSON.parse(content));
 	} catch (error) {
 		console.error(
 			`Failed to read setup config at ${configPath}: ${error instanceof Error ? error.message : String(error)}`,

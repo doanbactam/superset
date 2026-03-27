@@ -2,6 +2,13 @@ import {
 	DEFAULT_TERMINAL_TASK_PROMPT_TEMPLATE,
 	renderTaskPromptTemplate,
 } from "./agent-prompt-template";
+import {
+	getAgentType,
+	listAgentTypes,
+	type AgentFactory,
+} from "./agent-registry";
+
+const factories = listAgentTypes();
 
 export const AGENT_TYPES = [
 	"claude",
@@ -15,6 +22,13 @@ export const AGENT_TYPES = [
 ] as const;
 
 export type AgentType = (typeof AGENT_TYPES)[number];
+
+const labels = new Map(factories.map((f) => [f.id, f.label] as const));
+const descriptions = new Map(
+	factories
+		.filter((f) => f.description)
+		.map((f) => [f.id, f.description!] as const),
+);
 
 export const AGENT_LABELS: Record<AgentType, string> = {
 	claude: "Claude",
@@ -94,6 +108,10 @@ export const AGENT_PROMPT_COMMANDS: Record<
 		suffix: "--yolo",
 	},
 };
+
+// Re-export registry for external registration
+export { registerAgentType, getAgentType, listAgentTypes };
+export type { AgentFactory };
 
 export interface TaskInput {
 	id: string;

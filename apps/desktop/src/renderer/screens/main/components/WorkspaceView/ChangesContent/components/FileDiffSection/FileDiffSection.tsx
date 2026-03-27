@@ -459,61 +459,66 @@ export function FileDiffSection({
 							<span>Loading diff...</span>
 						</div>
 					) : hasRenderedDiff ? (
-						isEditing ? (
-							<div className="max-h-[70vh] min-h-[240px] overflow-auto bg-background">
-								{hasExternalDiskChange && (
-									<div className="border-b px-3 py-2">
-										<Alert variant="destructive">
-											<AlertTitle>File changed on disk</AlertTitle>
-											<AlertDescription>
-												This diff editor has local edits. Review the conflict
-												before saving or reload the current disk version.
-												<div className="mt-2 flex gap-2">
-													<Button
-														size="sm"
-														variant="outline"
-														onClick={handleReloadFromDisk}
-													>
-														Reload From Disk
-													</Button>
-													<Button
-														size="sm"
-														onClick={() => {
-															setSaveConflict({
-																localContent:
-																	editedContentRef.current ?? diffData.modified,
-																diskContent: diffData.modified,
-															});
-														}}
-													>
-														Review Diff
-													</Button>
-												</div>
-											</AlertDescription>
-										</Alert>
-									</div>
-								)}
-								<CodeEditor
-									key={`${file.path}-edit`}
-									value={editedContent ?? diffData.modified}
-									language={detectLanguage(file.path)}
-									onChange={(value) => {
-										setEditedContent(value);
-									}}
-									onSave={() => {
-										void handleSaveEditedContent();
-									}}
-									fillHeight={false}
+						<div
+							key={fileKey}
+							className="animate-in slide-in-from-right-2 fade-in duration-150"
+						>
+							{isEditing ? (
+								<div className="max-h-[70vh] min-h-[240px] overflow-auto bg-background">
+									{hasExternalDiskChange && (
+										<div className="border-b px-3 py-2">
+											<Alert variant="destructive">
+												<AlertTitle>File changed on disk</AlertTitle>
+												<AlertDescription>
+													This diff editor has local edits. Review the conflict
+													before saving or reload the current disk version.
+													<div className="mt-2 flex gap-2">
+														<Button
+															size="sm"
+															variant="outline"
+															onClick={handleReloadFromDisk}
+														>
+															Reload From Disk
+														</Button>
+														<Button
+															size="sm"
+															onClick={() => {
+																setSaveConflict({
+																	localContent:
+																		editedContentRef.current ?? diffData.modified,
+																	diskContent: diffData.modified,
+																});
+															}}
+														>
+															Review Diff
+														</Button>
+													</div>
+												</AlertDescription>
+											</Alert>
+										</div>
+									)}
+									<CodeEditor
+										key={`${file.path}-edit`}
+										value={editedContent ?? diffData.modified}
+										language={detectLanguage(file.path)}
+										onChange={(value) => {
+											setEditedContent(value);
+										}}
+										onSave={() => {
+											void handleSaveEditedContent();
+										}}
+										fillHeight={false}
+									/>
+								</div>
+							) : (
+								<LightDiffViewer
+									contents={diffData}
+									viewMode={diffViewMode}
+									hideUnchangedRegions={hideUnchangedRegions}
+									filePath={file.path}
 								/>
-							</div>
-						) : (
-							<LightDiffViewer
-								contents={diffData}
-								viewMode={diffViewMode}
-								hideUnchangedRegions={hideUnchangedRegions}
-								filePath={file.path}
-							/>
-						)
+							)}
+						</div>
 					) : !shouldLoadDiff ? (
 						inactivePlaceholder
 					) : (
