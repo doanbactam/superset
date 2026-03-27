@@ -22,6 +22,7 @@ import type {
 	SelectV2Workspace,
 	SelectWorkspace,
 } from "@superset/db/schema";
+import { isLocalMode } from "@superset/shared/local-mode";
 import type { AppRouter } from "@superset/trpc";
 import { electricCollectionOptions } from "@tanstack/electric-db-collection";
 import type {
@@ -48,7 +49,10 @@ import {
 
 const columnMapper = snakeCamelMapper();
 
-const electricUrl = `${env.NEXT_PUBLIC_ELECTRIC_URL}/v1/shape`;
+// In LOCAL_MODE, skip Electric sync and use local SQLite only
+const electricUrl = env.NEXT_PUBLIC_ELECTRIC_URL
+	? `${env.NEXT_PUBLIC_ELECTRIC_URL}/v1/shape`
+	: null;
 
 const apiKeyDisplaySchema = z.object({
 	id: z.string(),

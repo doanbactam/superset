@@ -5,7 +5,6 @@ import {
 	type SettingItemId,
 } from "../../../utils/settings-search";
 import { FontSettingSection } from "./components/FontSettingSection";
-import { MarkdownStyleSection } from "./components/MarkdownStyleSection";
 import { ThemeSection } from "./components/ThemeSection";
 
 /**
@@ -38,10 +37,6 @@ export function AppearanceSettings({ visibleItems }: AppearanceSettingsProps) {
 		SETTING_ITEM_ID.APPEARANCE_THEME,
 		visibleItems,
 	);
-	const showMarkdown = isItemVisible(
-		SETTING_ITEM_ID.APPEARANCE_MARKDOWN,
-		visibleItems,
-	);
 	const showEditorFont = isItemVisible(
 		SETTING_ITEM_ID.APPEARANCE_EDITOR_FONT,
 		visibleItems,
@@ -67,7 +62,6 @@ export function AppearanceSettings({ visibleItems }: AppearanceSettingsProps) {
 
 			<SectionList>
 				{showThemeSection && <ThemeSection key="theme" />}
-				{showMarkdown && <MarkdownStyleSection key="markdown" />}
 				{showEditorFont && (
 					<FontSettingSection key="editor-font" variant="editor" />
 				)}

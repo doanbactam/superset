@@ -37,13 +37,23 @@ export function WorkspaceLayout({
 		<ScrollProvider>
 			<div className="flex-1 min-w-0 overflow-hidden">
 				{isExpanded ? (
-					<ChangesContent />
+					<div
+						key="changes-content"
+						className="h-full animate-in fade-in duration-150"
+					>
+						<ChangesContent />
+					</div>
 				) : (
-					<ContentView
-						defaultExternalApp={defaultExternalApp}
-						onOpenInApp={onOpenInApp}
-						onOpenQuickOpen={onOpenQuickOpen}
-					/>
+					<div
+						key="content-view"
+						className="h-full animate-in fade-in duration-150"
+					>
+						<ContentView
+							defaultExternalApp={defaultExternalApp}
+							onOpenInApp={onOpenInApp}
+							onOpenQuickOpen={onOpenQuickOpen}
+						/>
+					</div>
 				)}
 			</div>
 			{isSidebarOpen && (

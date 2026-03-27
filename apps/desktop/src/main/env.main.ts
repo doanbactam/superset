@@ -18,12 +18,13 @@ export const env = createEnv({
 		NEXT_PUBLIC_STREAMS_URL: z.url().default("https://streams.superset.sh"),
 		NEXT_PUBLIC_ELECTRIC_URL: z
 			.url()
-			.default("https://electric-proxy.avi-6ac.workers.dev"),
+			.optional(), // Optional - skipped in LOCAL_MODE
 		NEXT_PUBLIC_WEB_URL: z.url().default("https://app.superset.sh"),
 		NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
 		NEXT_PUBLIC_POSTHOG_HOST: z.string().default("https://us.i.posthog.com"),
 		SENTRY_DSN_DESKTOP: z.string().optional(),
 		STREAMS_URL: z.url().default("https://superset-stream.fly.dev"),
+		SUPERSET_LOCAL_MODE: z.string().optional(),
 	},
 
 	runtimeEnv: {
@@ -39,6 +40,7 @@ export const env = createEnv({
 		NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
 		SENTRY_DSN_DESKTOP: process.env.SENTRY_DSN_DESKTOP,
 		STREAMS_URL: process.env.STREAMS_URL,
+		SUPERSET_LOCAL_MODE: process.env.SUPERSET_LOCAL_MODE,
 	},
 	emptyStringAsUndefined: true,
 	// Only allow skipping validation in development (never in production)
