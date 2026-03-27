@@ -19,9 +19,15 @@ export function getWorkspaceRowMocks(
 	workspaceId: string,
 ): WorkspaceRowMockData {
 	const seed = getSeed(workspaceId);
-	const paneStatuses: ActivePaneStatus[] = ["permission", "working", "review"];
+	const paneStatuses: ActivePaneStatus[] = [
+		"permission",
+		"working",
+		"waiting",
+		"failed",
+		"review",
+	];
 	const status =
-		seed % 6 === 0 ? paneStatuses[seed % paneStatuses.length] : null;
+		seed % 8 === 0 ? paneStatuses[seed % paneStatuses.length] : null;
 
 	return {
 		diffStats: {

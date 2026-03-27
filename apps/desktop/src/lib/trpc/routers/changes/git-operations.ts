@@ -405,6 +405,32 @@ async function getMergeBaseBranch(
 	}
 }
 
+async function createPullRequestDirectly(
+	worktreePath: string,
+	git: SimpleGit,
+	branch: string,
+): Promise<string> {
+	try {
+		const { stdout } = await execWithShellEnv(
+			"gh",
+			["pr", "create", "--fill", "--json", "url"],
+			{ cwd: worktreePath },
+		);
+		const result = JSON.parse(stdout) as { url?: string };
+		if (result.url) {
+			return result.url;
+		}
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		console.warn(
+			"[git/createPullRequestDirectly] Failed to create PR directly, falling back to compare URL:",
+			message,
+		);
+	}
+	// Fallback to compare URL if gh pr create fails
+	return buildNewPullRequestUrl(worktreePath, git, branch);
+}
+
 async function buildNewPullRequestUrl(
 	worktreePath: string,
 	git: SimpleGit,
@@ -708,7 +734,7 @@ export const createGitOperationsRouter = () => {
 					}
 
 					try {
-						const url = await buildNewPullRequestUrl(
+						const url = await createPullRequestDirectly(
 							input.worktreePath,
 							git,
 							branch,

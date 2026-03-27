@@ -19,10 +19,18 @@ export type PaneType =
  * Pane status for agent lifecycle indicators
  * - idle: No indicator shown (default)
  * - working: Agent actively processing (amber)
+ * - waiting: Agent paused, waiting for user input (blue)
  * - permission: Agent blocked, needs user action (red)
  * - review: Agent completed, ready for review (green)
+ * - failed: Agent errored (dark red)
  */
-export type PaneStatus = "idle" | "working" | "permission" | "review";
+export type PaneStatus =
+	| "idle"
+	| "working"
+	| "waiting"
+	| "permission"
+	| "review"
+	| "failed";
 
 /** Non-idle status for UI indicators */
 export type ActivePaneStatus = Exclude<PaneStatus, "idle">;
@@ -34,8 +42,10 @@ export type ActivePaneStatus = Exclude<PaneStatus, "idle">;
 export const STATUS_PRIORITY = {
 	idle: 0,
 	review: 1,
-	working: 2,
-	permission: 3,
+	waiting: 2,
+	working: 3,
+	failed: 4,
+	permission: 5,
 } as const satisfies Record<PaneStatus, number>;
 
 /**
@@ -78,12 +88,14 @@ export function getHighestPriorityStatus(
  * (e.g. clicking a tab, focusing a pane, selecting a workspace).
  *
  * - "review"     → "idle"    (user saw the completion)
+ * - "failed"     → "idle"    (user acknowledged the error)
+ * - "waiting"    → unchanged (persists until agent resumes)
  * - "permission" → unchanged (persists until agent resumes)
  * - "working"    → unchanged (persists until agent stops)
  * - "idle"       → unchanged
  */
 export function acknowledgedStatus(status: PaneStatus | undefined): PaneStatus {
-	if (status === "review") return "idle";
+	if (status === "review" || status === "failed") return "idle";
 	return status ?? "idle";
 }
 

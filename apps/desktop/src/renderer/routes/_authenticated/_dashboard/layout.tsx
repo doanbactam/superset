@@ -12,6 +12,7 @@ import { ResizablePanel } from "renderer/screens/main/components/ResizablePanel"
 import { WorkspaceSidebar } from "renderer/screens/main/components/WorkspaceSidebar";
 import { useAppHotkey } from "renderer/stores/hotkeys";
 import { useOpenNewWorkspaceModal } from "renderer/stores/new-workspace-modal";
+import { useCreateWorkspace } from "renderer/react-query/workspaces";
 import {
 	COLLAPSED_WORKSPACE_SIDEBAR_WIDTH,
 	DEFAULT_WORKSPACE_SIDEBAR_WIDTH,
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/_authenticated/_dashboard")({
 function DashboardLayout() {
 	const navigate = useNavigate();
 	const openNewWorkspaceModal = useOpenNewWorkspaceModal();
+	const createWorkspace = useCreateWorkspace();
 	const isV2CloudEnabled =
 		useFeatureFlagEnabled(FEATURE_FLAGS.V2_CLOUD) ?? false;
 	// Get current workspace from route to pre-select project in new workspace modal
@@ -91,6 +93,22 @@ function DashboardLayout() {
 		() => openNewWorkspaceModal(currentWorkspace?.projectId),
 		undefined,
 		[openNewWorkspaceModal, currentWorkspace?.projectId],
+	);
+
+	// Quick-create workspace: skip modal, use current project defaults
+	useAppHotkey(
+		"QUICK_CREATE_WORKSPACE",
+		() => {
+			const projectId = currentWorkspace?.projectId;
+			if (!projectId) return;
+			createWorkspace.mutate({
+				projectId,
+			 branchName: "",
+			 prompt: "",
+			});
+		},
+		undefined,
+		[createWorkspace, currentWorkspace?.projectId],
 	);
 
 	return (

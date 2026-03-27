@@ -18,6 +18,18 @@ const STATUS_CONFIG = {
 		pulse: true,
 		tooltip: "Agent working",
 	},
+	waiting: {
+		pingColor: "bg-blue-400",
+		dotColor: "bg-blue-500",
+		pulse: false,
+		tooltip: "Waiting for input",
+	},
+	failed: {
+		pingColor: "bg-red-900",
+		dotColor: "bg-red-700",
+		pulse: false,
+		tooltip: "Agent failed",
+	},
 	review: {
 		pingColor: "",
 		dotColor: "bg-green-500",
@@ -38,6 +50,8 @@ interface StatusIndicatorProps {
  * Visual indicator for pane/workspace status.
  * - Red pulsing: needs user input (permission)
  * - Amber pulsing: agent working
+ * - Blue static: waiting for user input
+ * - Dark red static: agent failed
  * - Green static: ready for review
  */
 export function StatusIndicator({ status, className }: StatusIndicatorProps) {

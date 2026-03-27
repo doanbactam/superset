@@ -112,7 +112,7 @@ export function ChangesView({
 	const { status, isLoading, effectiveBaseBranch, branchData, refetch } =
 		useGitChangesStatus({
 			worktreePath,
-			refetchInterval: isActive ? 2500 : undefined,
+			refetchInterval: isActive ? 10000 : undefined,
 			refetchOnWindowFocus: isActive,
 			branchRefetchInterval: isActive
 				? undefined
@@ -426,6 +426,7 @@ export function ChangesView({
 					}
 				}
 
+				refetch();
 				Promise.all(invalidations).catch((error) => {
 					console.error("[ChangesView] Failed to refresh changes state:", {
 						worktreePath,

@@ -47,7 +47,9 @@ export const DEFAULT_FILE_OPEN_MODE = "split-pane" as const;
 export const DEFAULT_AUTO_APPLY_DEFAULT_PRESET = true;
 export const DEFAULT_SHOW_PRESETS_BAR = true;
 export const DEFAULT_USE_COMPACT_TERMINAL_ADD_BUTTON = true;
-export const DEFAULT_TELEMETRY_ENABLED = true;
+// Telemetry defaults to OFF (opt-in)
+// Can be overridden via SUPERSET_TELEMETRY=1 env var
+export const DEFAULT_TELEMETRY_ENABLED = false;
 export const DEFAULT_SHOW_RESOURCE_MONITOR = true;
 export const DEFAULT_OPEN_LINKS_IN_APP = false;
 
